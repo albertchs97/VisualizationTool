@@ -131,6 +131,7 @@ public class VisualizationTool extends JFrame{
 				String FileName = eFilePath + eFile;
 				File file = new File(FileName);
 				//读取xlsx
+				boolean readFileSuccess = true;
 				try{
 					InputStream is = new FileInputStream(file);
 					XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
@@ -141,24 +142,29 @@ public class VisualizationTool extends JFrame{
 					for (int rowNum = 0; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
 						XSSFRow xssfRow = xssfSheet.getRow(rowNum);
 						if (xssfRow != null) {
-						        //读取第一列数据-时间
-						        t[rowNum] = xssfRow.getCell(0).getNumericCellValue();
-						        //读取第二列数据-电压/电流
-						        data[rowNum] = xssfRow.getCell(1).getNumericCellValue();
-						    }
-						}		
+				        //读取第一列数据-时间
+				        t[rowNum] = xssfRow.getCell(0).getNumericCellValue();
+				        //读取第二列数据-电压/电流
+				        data[rowNum] = xssfRow.getCell(1).getNumericCellValue();
+						}
+					}		
 				}catch(Exception e1){
+					readFileSuccess = false;
 					e1.printStackTrace();
+					PopUpDialog errorDialog = new PopUpDialog(VisualizationTool.this, "Error Dialog", "Format of this file is unvalid");
+					errorDialog.setVisible(true);
 				}
-				PlotGraph graph1 = new PlotGraph();
-				graph1.setChartTitle("V-T graph");
-				graph1.setLabel("Time (s)", "Voltage (V)");
-				graph1.setDataset(t, data, "data1");
-				//pan.remove(TestArea);
-				pan.removeAll();
-				pan.setLayout(new java.awt.BorderLayout());
-				pan.add(graph1.createChart(),BorderLayout.CENTER);
-				pan.validate();
+				if(readFileSuccess){
+					PlotGraph graph1 = new PlotGraph();
+					graph1.setChartTitle("V-T graph");
+					graph1.setLabel("Time (s)", "Voltage (V)");
+					graph1.setDataset(t, data, "data1");
+					//pan.remove(TestArea);
+					pan.removeAll();
+					pan.setLayout(new java.awt.BorderLayout());
+					pan.add(graph1.createChart(),BorderLayout.CENTER);
+					pan.validate();
+				}
 			}
 		});
 		
