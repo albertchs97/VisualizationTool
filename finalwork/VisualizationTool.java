@@ -60,6 +60,8 @@ public class VisualizationTool extends JFrame{
 	JToggleButton Zoom = new JToggleButton("Zoom");
 	JButton Reset = new JButton("Reset");
 	
+	boolean dataExist = false; //避免文件还未被读取，数据分析功能实现。
+	
 	double[] t;
 	double[] data;
 	int datalength = 0;
@@ -166,6 +168,7 @@ public class VisualizationTool extends JFrame{
 					pan.setLayout(new java.awt.BorderLayout());
 					pan.add(graph1.createChart(),BorderLayout.CENTER);
 					pan.validate();
+					dataExist = true;
 				}
 			}
 		});
@@ -209,6 +212,11 @@ public class VisualizationTool extends JFrame{
 					public void actionPerformed(ActionEvent e) {
 						if(TextField_HA1.getText().isEmpty() || TextField_HA2.getText().isEmpty())
 							return;
+						if(dataExist == false ) {
+							PopUpDialog errorDialog = new PopUpDialog(VisualizationTool.this, "Error Dialog", "Please input Data.");
+							errorDialog.setVisible(true);
+							return;
+						}
 						
 						double f_base = Double.parseDouble(TextField_HA1.getText()); //基频
 						int max_harmonic_order = Integer.parseInt(TextField_HA2.getText()); //最高谐波次数
@@ -398,6 +406,11 @@ public class VisualizationTool extends JFrame{
 		
 		mTools_FT.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(dataExist == false ) {
+					PopUpDialog errorDialog = new PopUpDialog(VisualizationTool.this, "Error Dialog", "Please input Data.");
+					errorDialog.setVisible(true);
+					return;
+				}
 				int datalength_addzero;
 				if((datalength & -datalength) != datalength){
 					//如果datalength不是2的整数次幂，在后面补零
@@ -448,6 +461,11 @@ public class VisualizationTool extends JFrame{
 		
 		mTools_SA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(dataExist == false ) {
+					PopUpDialog errorDialog = new PopUpDialog(VisualizationTool.this, "Error Dialog", "Please input Data.");
+					errorDialog.setVisible(true);
+					return;
+				}
 				int datalength_addzero;
 				if((datalength & -datalength) != datalength){
 					//如果datalength不是2的整数次幂，在后面补零
