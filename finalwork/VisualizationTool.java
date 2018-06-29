@@ -344,7 +344,9 @@ public class VisualizationTool extends JFrame{
 						String FileName_UI = UIFilePath + UIFile;
 						File file_UI = new File(FileName_UI);
 						//读取xlsx
+						boolean readFileSuccess = true;
 						try{
+							if(!file_UI.exists()) return;
 							InputStream is = new FileInputStream(file_UI);
 							XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
 							XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
@@ -372,15 +374,20 @@ public class VisualizationTool extends JFrame{
 							String P_avString = String.format("%.3f",P_av);
 							P_TextArea.setText(P_avString);
 						}catch(Exception e1){
+							readFileSuccess = false;
 							e1.printStackTrace();
+							PopUpDialog errorDialog = new PopUpDialog(VisualizationTool.this, "Error Dialog", "Format of this file is unvalid");
+							errorDialog.setVisible(true);
 						}
-						PlotGraph graphPT = new PlotGraph();
-						graphPT.setChartTitle("P-T graph");
-						graphPT.setLabel("Time (s)", "Power (W)");
-						graphPT.setDataset(t_UI, data_P, "Power");
-						ChartFrame frame_PT = new ChartFrame("Power Analysis" , graphPT.createFreeChart());
-						frame_PT.pack();
-						frame_PT.setVisible(true);
+						if(readFileSuccess){
+							PlotGraph graphPT = new PlotGraph();
+							graphPT.setChartTitle("P-T graph");
+							graphPT.setLabel("Time (s)", "Power (W)");
+							graphPT.setDataset(t_UI, data_P, "Power");
+							ChartFrame frame_PT = new ChartFrame("Power Analysis" , graphPT.createFreeChart());
+							frame_PT.pack();
+							frame_PT.setVisible(true);
+						}					
 						
 					}
 					
