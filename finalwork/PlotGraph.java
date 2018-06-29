@@ -51,6 +51,18 @@ public class PlotGraph {
 		plot.setRenderer(renderer);
 		return chartPanel;
 	}
+	
+	public JFreeChart createFreeChart(){
+		JFreeChart xylineChart = ChartFactory.createXYLineChart(
+				chartTitle,
+				chartXLabel,
+				chartYLabel,
+				xyDataSet,
+//				createDataset(),
+				PlotOrientation.VERTICAL,
+				true,true,false);
+		return xylineChart;
+	}
 
 	
 	private XYDataset createDataset(double[] x, double[] y,String legend){
