@@ -70,6 +70,7 @@ public class VisualizationTool extends JFrame{
 	double[] t_UI;
 	double[] data_U;
 	double[] data_I;
+	double[] data_P;
 	int datalength_UI = 0;
 	FileDialog fd_PC = new FileDialog(this);
 	String UIFilePath = null;
@@ -133,6 +134,7 @@ public class VisualizationTool extends JFrame{
 				//读取xlsx
 				boolean readFileSuccess = true;
 				try{
+					if(!file.exists()) return;
 					InputStream is = new FileInputStream(file);
 					XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
 					XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
@@ -350,6 +352,7 @@ public class VisualizationTool extends JFrame{
 							t_UI = new double[datalength_UI];
 							data_U = new double[datalength_UI];
 							data_I = new double[datalength_UI];
+							data_P = new double[datalength_UI];
 							double P_sum = 0;
 							double P_av = 0;
 							for (int rowNum = 0; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
@@ -362,6 +365,7 @@ public class VisualizationTool extends JFrame{
 								        //读取第三列数据-电流
 								        data_I[rowNum] = xssfRow.getCell(2).getNumericCellValue();
 								        P_sum += data_U[rowNum]*data_I[rowNum];
+								        data_P[rowNum] = data_U[rowNum]*data_I[rowNum];
 								    }
 								}	
 							P_av = P_sum/(t_UI[datalength_UI-1]-t_UI[0]);
@@ -370,8 +374,16 @@ public class VisualizationTool extends JFrame{
 						}catch(Exception e1){
 							e1.printStackTrace();
 						}
+						PlotGraph graphPT = new PlotGraph();
+						graphPT.setChartTitle("P-T graph");
+						graphPT.setLabel("Time (s)", "Power (W)");
+						graphPT.setDataset(t_UI, data_P, "Power");
+						ChartFrame frame_PT = new ChartFrame("Power Analysis" , graphPT.createFreeChart());
+						frame_PT.pack();
+						frame_PT.setVisible(true);
 						
 					}
+					
 				});
 				
 			}
